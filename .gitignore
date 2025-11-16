@@ -1,0 +1,21 @@
+# Raw dataset
+data/clin_trials.csv
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Model artifacts
+*.joblib
+
+# Plots
+*.png
+
+# Virtual environments
+env/
+venv/
+.cs337/
+*.swp
+
+# OS metadata
+.DS_Store
