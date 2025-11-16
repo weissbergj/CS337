@@ -24,6 +24,10 @@ Concretely, we define:
 
 ### 3.1 Source
 
+**Modeling dataset summary:**  
+- **Final dataset:** **5,071** matched **oncology Phase II → Phase III** trial pairs  
+- **Label balance:** ~49% success / 51% non-success  
+
 We use the Kaggle dataset:
 
 - **Dataset:** *ClinicalTrials.gov Clinical Trials dataset*  
