@@ -5,9 +5,6 @@ data/clin_trials.csv
 __pycache__/
 *.pyc
 
-# Model artifacts
-*.joblib
-
 # Plots
 *.png
 
