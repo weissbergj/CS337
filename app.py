@@ -7,6 +7,7 @@ import joblib
 # ===============================
 @st.cache_resource
 def load_model():
+    # This must match the filename you saved from train.py
     return joblib.load("model.joblib")
 
 model = load_model()
@@ -17,61 +18,105 @@ model = load_model()
 st.title("Phase III Success Predictor (Oncology)")
 
 st.markdown("""
-This demo predicts the probability that an oncology **Phase II intervention**  
+This demo predicts the probability that an oncology **Phase II trial**  
 will successfully complete **Phase III**, based on patterns learned from  
-**5,071 historical Phase II → Phase III pairs**.
+**5,071 historical Phase II → Phase III pairs** derived from ClinicalTrials.gov metadata.
 """)
 
 # ===============================
 # User Inputs
 # ===============================
-st.header("Enter Trial Information")
+st.header("Enter Phase II Trial Information")
 
 intervention = st.text_input(
-    "Intervention Name",
-    placeholder="e.g., nivolumab, capecitabine, trastuzumab"
+    "Intervention(s) / Drug(s)",
+    placeholder="e.g., nivolumab, capecitabine + oxaliplatin"
+)
+
+brief_title = st.text_input(
+    "Brief trial title",
+    placeholder="e.g., A Phase II Study of Nivolumab in Metastatic NSCLC"
+)
+
+conditions = st.text_input(
+    "Cancer type / condition(s)",
+    placeholder="e.g., metastatic non-small cell lung cancer"
+)
+
+outcome = st.text_area(
+    "Primary outcome summary",
+    placeholder="e.g., Overall response rate at 6 months."
 )
 
 org_class = st.selectbox(
-    "Sponsor Type",
+    "Sponsor type (Organization Class)",
     [
-        "INDUSTRY", "NIH", "NETWORK", "OTHER", "OTHER_GOV",
-        "UNKNOWN", "FED", "INDIV"
-    ]
+        "INDUSTRY",
+        "NIH",
+        "NETWORK",
+        "OTHER",
+        "OTHER_GOV",
+        "UNKNOWN",
+        "FED",
+        "INDIV",
+    ],
+    index=0,
+)
+
+primary_purpose = st.selectbox(
+    "Primary Purpose",
+    [
+        "TREATMENT",
+        "PREVENTION",
+        "DIAGNOSTIC",
+        "HEALTH_SERVICES_RESEARCH",
+        "SCREENING",
+        "SUPPORTIVE_CARE",
+        "BASIC_SCIENCE",
+        "OTHER",
+        "ECT",
+        "Unknown",
+    ],
+    index=0,
 )
 
 # ===============================
 # Predict
 # ===============================
 if st.button("Predict Phase III Success"):
+    # Basic validation
     if intervention.strip() == "":
-        st.error("Please enter an intervention name.")
+        st.error("Please enter at least an intervention/drug name.")
     else:
-        # Build input dataframe
+        # Build combined_text exactly like in training:
+        # combined_text = Interventions_clean + Brief Title + Conditions + Outcome Measure
+        combined_text = " ".join([
+            intervention.strip(),
+            brief_title.strip(),
+            conditions.strip(),
+            outcome.strip(),
+        ])
+
+        # Build input DataFrame with the exact columns the model expects
         X_input = pd.DataFrame([{
-            "Interventions_clean": intervention.lower().strip(),
-            "Organization Class": org_class
+            "combined_text": combined_text,
+            "Organization Class": org_class,
+            "Primary Purpose": primary_purpose,
         }])
 
-        # Predict
-        prob_success = model.predict_proba(X_input)[0][1]
-        label = "Likely to succeed" if prob_success >= 0.5 else "Likely to fail"
+        # Run model
+        prob_success = model.predict_proba(X_input)[0, 1]
+        pred_label = model.predict(X_input)[0]
 
-        # Display results
         st.subheader("Prediction Results")
-        st.write(f"**Predicted Probability of Success:** `{prob_success:.2f}`")
-        
-        if prob_success >= 0.5:
-            st.success(label)
-        else:
-            st.error(label)
+        st.write(f"**Predicted Probability of Phase III Success:** `{prob_success:.2%}`")
 
-# ===============================
-# Footer
-# ===============================
-st.markdown("""
----
-**Note:**  
-This model is a proof-of-concept trained on historical clinical trial metadata.  
-It should **not** be used for real clinical decision-making.
-""")
+        if pred_label == 1:
+            st.success("Model prediction: **Likely to succeed ✅**")
+        else:
+            st.error("Model prediction: **Likely NOT to succeed ⚠️**")
+
+        st.caption(
+            "Note: This is a proof-of-concept model using historical metadata only. "
+            "It is **not** intended for clinical or investment decision-making."
+        )
