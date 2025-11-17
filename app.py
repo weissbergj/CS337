@@ -2,9 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# ===============================
 # Load model
-# ===============================
 @st.cache_resource
 def load_model():
     # This must match the filename you saved from train.py
@@ -12,9 +10,7 @@ def load_model():
 
 model = load_model()
 
-# ===============================
 # Title + Description
-# ===============================
 st.title("Phase III Success Predictor (Oncology)")
 
 st.markdown("""
@@ -23,9 +19,7 @@ will successfully complete **Phase III**, based on patterns learned from
 **5,071 historical Phase II → Phase III pairs** derived from ClinicalTrials.gov metadata.
 """)
 
-# ===============================
 # User Inputs
-# ===============================
 st.header("Enter Phase II Trial Information")
 
 intervention = st.text_input(
@@ -80,9 +74,7 @@ primary_purpose = st.selectbox(
     index=0,
 )
 
-# ===============================
 # Predict
-# ===============================
 if st.button("Predict Phase III Success"):
     # Basic validation
     if intervention.strip() == "":
