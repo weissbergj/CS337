@@ -611,7 +611,7 @@ def render_dashboard():
                                                        bins=[0, 20, 40, 60, 1000],
                                                        labels=["Short", "Medium", "Long", "Very Long"])
                 
-                length_stats = known_copy.groupby("length_category")["actual_success"].agg(["mean", "count"]).reset_index()
+                length_stats = known_copy.groupby("length_category", observed=False)["actual_success"].agg(["mean", "count"]).reset_index()
                 
                 fig = px.bar(length_stats, x="length_category", y="mean",
                            text=length_stats["mean"].apply(lambda x: f"{x:.0%}"),
