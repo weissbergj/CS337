@@ -20,8 +20,8 @@ def render_dashboard():
     # Outcome status filter
     outcome_status = st.sidebar.radio(
         "Outcome Status",
-        ["All", "Known", "Unknown"],
-        help="Filter trials based on whether Phase III outcome is documented"
+        ["All", "Success", "Failure"],
+        help="Filter trials based on Phase III outcome (success or failure)"
     )
     
     # Text search
@@ -91,10 +91,10 @@ def render_dashboard():
     filtered = df.copy()
     
     # Outcome status
-    if outcome_status == "Known":
-        filtered = filtered[filtered["outcome_known"] == True]
-    elif outcome_status == "Unknown":
-        filtered = filtered[filtered["outcome_known"] == False]
+    if outcome_status == "Success":
+        filtered = filtered[filtered["actual_success"] == 1]
+    elif outcome_status == "Failure":
+        filtered = filtered[filtered["actual_success"] == 0]
     
     # Text search
     if search:
