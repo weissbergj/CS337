@@ -3,8 +3,8 @@
 ## 1. Overview
 
 We train a logistic regression model to estimate whether an oncology Phase III trial
-will **successfully complete**, using only information available at **Phase II**.
-The model relies entirely on public metadata from ClinicalTrials.gov.
+will **successfully complete**, using information available at **Phase II**.
+The model relies on public metadata from ClinicalTrials.gov.
 
 ---
 
