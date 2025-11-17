@@ -1,8 +1,37 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from src.app.dashboard import render_dashboard
 
+# ===============================
+# Page Configuration
+# ===============================
+st.set_page_config(
+    page_title="Phase III Success Predictor",
+    page_icon="🔬",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# ===============================
+# Navigation
+# ===============================
+page = st.sidebar.radio(
+    "Navigation",
+    ["🧪 Calculator", "📊 Historical Insights"],
+    index=0
+)
+
+# ===============================
+# Route to appropriate page
+# ===============================
+if page == "📊 Historical Insights":
+    render_dashboard()
+    st.stop()
+
+# ===============================
 # Load model
+# ===============================
 @st.cache_resource
 def load_model():
     # This must match the filename you saved from train.py
@@ -10,7 +39,9 @@ def load_model():
 
 model = load_model()
 
+# ===============================
 # Title + Description
+# ===============================
 st.title("Phase III Success Predictor (Oncology)")
 
 st.markdown("""
