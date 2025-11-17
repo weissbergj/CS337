@@ -185,6 +185,8 @@ with tab2:
 
     st.markdown("**Team Name: PhaseForward** (Charles Chen, Chelsea Hu, Meghana Paturu, and Jared Weissberg)")
 
+    st.markdown("**Project Title: BioDiligence: A Data-Driven Pipeline for Predicting Drug Development Success**")
+
     st.write("**Course:** Stanford CS337 – AI for Healthcare")
 
     st.markdown("**Project Abstract:**")
