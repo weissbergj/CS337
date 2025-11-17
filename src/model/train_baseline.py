@@ -7,9 +7,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, roc_auc_score
 
-# ============================
 # Load data
-# ============================
 df = pd.read_csv("data/phase2_phase3_pairs.csv")
 
 # Features
@@ -20,16 +18,14 @@ label_col = "label_success"
 X = df[[text_col, cat_col]]
 y = df[label_col]
 
-# ============================
+
 # Train/Test Split
-# ============================
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-# ============================
+
 # Transformers
-# ============================
 text_tfidf = TfidfVectorizer(
     stop_words="english",
     max_features=2000,     # simple + effective
@@ -44,9 +40,8 @@ preprocess = ColumnTransformer(
     ]
 )
 
-# ============================
+
 # Build model pipeline
-# ============================
 model = Pipeline(
     steps=[
         ("preprocess", preprocess),
@@ -54,15 +49,13 @@ model = Pipeline(
     ]
 )
 
-# ============================
+
 # Train
-# ============================
 print("Training model...")
 model.fit(X_train, y_train)
 
-# ============================
+
 # Evaluate
-# ============================
 y_pred = model.predict(X_test)
 y_prob = model.predict_proba(X_test)[:, 1]
 
@@ -73,9 +66,8 @@ print("\n=== BASELINE RESULTS ===")
 print(f"Accuracy: {acc:.3f}")
 print(f"ROC-AUC:  {auc:.3f}")
 
-# ============================
+
 # Save model
-# ============================
 import joblib
 joblib.dump(model, "baseline_model.joblib")
 
