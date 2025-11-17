@@ -26,12 +26,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ===============================
 # Load model
-# ===============================
 @st.cache_resource
 def load_model():
-    # This must match the filename you saved from train.py
     return joblib.load("model.joblib")
 
 model = load_model()
@@ -39,24 +36,21 @@ model = load_model()
 # ===============================
 # Tabs
 # ===============================
-tab1, tab2 = st.tabs(["Predictor Tool", "About Us"])
+tab1, tab2 = st.tabs(["Predictor", "About Us"])
 
 # ===============================
-# TAB 1 — PREDICTOR TOOL
+# TAB 1 — MAIN APP
 # ===============================
 with tab1:
-    # ===============================
+
     # Title + Description
-    # ===============================
-    st.markdown("<h1 style='text-align: center;'>Phase III Success Predictor (Oncology)</h1>", unsafe_allow_html=True)
+    st.title("Phase III Success Predictor (Oncology)")
 
     st.markdown("""
-        <div style='max-width: 750px; margin-left: auto; margin-right: auto; text-align: center;'>
-            This demo predicts the probability that an oncology <b>Phase II trial</b>
-            will successfully complete <b>Phase III</b>, based on patterns learned from
-            <b>5,071 historical Phase II → Phase III pairs</b> derived from ClinicalTrials.gov metadata.
-        </div>
-    """, unsafe_allow_html=True)
+    This demo predicts the probability that an oncology **Phase II trial**  
+    will successfully complete **Phase III**, based on patterns learned from  
+    **5,071 historical Phase II → Phase III pairs** derived from ClinicalTrials.gov metadata.
+    """)
 
     # ===============================
     # User Inputs
@@ -119,12 +113,10 @@ with tab1:
     # Predict
     # ===============================
     if st.button("Predict Phase III Success"):
-        # Basic validation
+
         if intervention.strip() == "":
             st.error("Please enter at least an intervention/drug name.")
         else:
-            # Build combined_text exactly like in training:
-            # combined_text = Interventions_clean + Brief Title + Conditions + Outcome Measure
             combined_text = " ".join([
                 intervention.strip(),
                 brief_title.strip(),
@@ -132,7 +124,6 @@ with tab1:
                 outcome.strip(),
             ])
 
-            # Build input DataFrame with the exact columns the model expects
             X_input = pd.DataFrame([{
                 "combined_text": combined_text,
                 "Organization Class": org_class,
@@ -160,14 +151,14 @@ with tab1:
 # TAB 2 — ABOUT US
 # ===============================
 with tab2:
+
     st.markdown("<h1 style='text-align: center;'>About Us</h1>", unsafe_allow_html=True)
 
     st.markdown("**Team Name: PhaseForward** (Charles Chen, Chelsea Hu, Meghana Paturu, and Jared Weissberg)")
+
+    st.write("**Course:** Stanford CS337 – AI for Healthcare")
+
+    st.markdown("**Project Abstract:**")
+
     st.write("""
-    **Course:** Stanford CS337 – AI for Healthcare
-    """)
-    st.markdown("**Project Abstract:** ")
-    
-    st.write("""
-    Our goal for this project is to build a quantitative tool that predicts the probability that a new drug candidate will succeed in Phase III trials and receive FDA approval. Typically, healthcare investors rely on subjective expert opinions and broad historical averages to guide their decisions, but these methods provide limited drug-specific insight because they ignore the candidate’s actual Phase II efficacy and safety results. Our approach is to collect past and ongoing clinical trial data, including Phase II efficacy results, safety outcomes, endpoints, and trial design details, to train a predictive model that estimates the drug-level likelihood of success. An example workflow of using our tool is that a user could input a candidate drug, and our system will compare its early-phase profile to similar historical cases to generate a dashboard filled with evidence-based probability scores, confidence intervals, and similarity metrics. In the past few weeks, our group has identified primary data sources, outlined scraping methods to fill gaps in publicly available information, and defined the core features we need to start building up our consolidated dataset for developing our model. 
-    """)
+    Our goal for this project is to build a quantitative tool that predicts the probability that a new drug candidate will succeed in Phase III trials and receive FDA approval. Typically, healthcare investors rely on subjective expert opinions and broad historical averages to guide their decisions, but these methods provide limited drug-specific insight because they ignore the candidate’s actual Phase II efficacy and safety results. Our approach is to collect past and ongoing clinical trial data, including Phase II efficacy results, safety outcomes, endpoints, and trial design details, to train a predictive model that estimates the drug-level likelihood of success. An example workflow of using our tool is that a user could input a candidate drug, and our system will compare its early-phase profile to similar historical cases to generate a dashboard filled with evidence-based probability scores, confidence intervals, and similarity metrics. In the past few weeks, our group has identified primary data sources, outlined scraping methods to fill gaps in publicly available information, and defined the core features we need to start building up our consolidated dataset for developing""")
